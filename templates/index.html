@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crow Web Interface</title>
+    <link rel="icon" href="/static/favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #1b1b1b;
+        display: flex;
+        height: 100vh;
+        color: #ffffff; /* White text color */
+    }
+    #sidebar {
+        border-right: 1px solid #0f0f0f;
+        min-width: 400px;
+        width: 25%;
+        padding: 5px;
+        box-sizing: border-box;
+        background-color: #313131; /* Dark sidebar background */
+    }
+    #chat-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    #conversation-log {
+        border: 1px solid #0f0f0f; /* Darker border color */
+        padding: 10px;
+        margin: 10px;
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: #242424;
+        white-space: pre-line;
+    }
+    .message {
+        margin-bottom: 10px;
+        padding: 5px;
+        border-radius: 5px;
+        color: #000; /* Black text color for messages */
+    }
+    .user {
+        background-color: #1e2533; /* Darker background color for user messages */
+        color: #00ccff; /* White text color */
+    }
+    .assistant {
+        background-color: #311e00; /* Darker background color for assistant messages */
+        color: #ffb325; /* White text color */
+    }
+    #chat-input {
+        margin: 10px;
+        padding: 5px;
+        width: calc(100% - 40px);
+        border: 1px solid #0f0f0f; /* Darker border color */
+        border-radius: 5px;
+        background-color: #1d1d1d; /* Darker input field background */
+        color: #ffffff; /* White text color for input */
+    }
+
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px;
+        cursor: pointer;
+        margin-bottom: 5px; /* Add space between conversation items */
+    }
+
+    .conversation-button {
+        background: none;
+        border: 1px solid #2e2e2e; /* Light border for buttons */
+        color: #bbbbbb;
+        padding: 5px 10px; /* Add padding inside the buttons */
+        border-radius: 4px; /* Slightly rounded corners for the buttons */
+        text-align: left;
+        flex-grow: 1;
+        cursor: pointer;
+        margin-right: 10px; /* Add space between button and delete icon */
+    }
+
+    .conversation-button:hover {
+        border-color: #3e3e3e; /* Slightly lighter border on hover */
+    }
+
+    .conversation-item span {
+        color: #ff4d4d; /* Red color for delete icon */
+        cursor: pointer;
+        font-size: 14px; /* Adjust as needed */
+        padding: 5px;
+        border-radius: 50%; /* Circular shape for the delete icon */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px; /* Fixed width */
+        height: 20px; /* Fixed height */
+    }
+
+    .conversation-item span:hover {
+        color: #ff6666; /* Lighter red on hover */
+    }
+    #settings-link {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        text-decoration: none;
+        color: #ffffff;
+        margin-top: 20px;
+        border-top: 1px solid #ccc;
+    }
+    #settings-link svg {
+        margin-right: 10px;
+    }
+
+</style>
+
+</head>
+<body>
+    <div id="sidebar">
+        
+        <ul id="conversation-list">
+            <button class="conversation-button" data-conversation-id="new">New Conversation</button>
+            <!-- Conversations will be listed here -->
+        </ul>
+        <a href="/settings" id="settings-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Settings
+        </a>
+    </div>
+    <div id="chat-area">
+        <div id="conversation-log">
+
+        </div>
+        <textarea id="chat-input" placeholder="Type your message here..." rows="4" autofocus onkeypress="checkEnter(event)"></textarea>
+    </div>
+
+    <script>
+        var currentConversationId=1;
+
+        document.addEventListener('DOMContentLoaded', function() {
+           selectConversation(currentConversationId);
+        });
+
+        $(document).on('click', '.conversation-button', function() {
+            var conversationId = $(this).data('conversation-id');
+            if (conversationId === "new") {
+                $.post("/new_conversation", function(response) {
+                    var newConversationId = response.conversation_id;
+                    // Refresh the list of conversations to include the new one
+                    refreshConversationsList();
+
+                    // Switch to displaying the new conversation
+                    selectConversation(newConversationId);
+                });
+            } else {
+                // Load the existing conversation
+                selectConversation(conversationId);
+            }
+        });
+
+        function refreshConversationsList() {
+            // Request the list of conversations from the server
+            $.get("/get_conversations", function(response) {
+                var conversations = response.conversations;
+                
+                // Clear the existing list of buttons
+                $('#conversation-list').empty();
+                
+                                // Add the "New Conversation" button
+                var newButton = $('<button class="conversation-item" data-conversation-id="new">New Conversation</button>');
+                $('#conversation-list').append(newButton);
+
+                // Create a new button for each conversation
+                for (var i = 0; i < conversations.length; i++) {
+                    var conversationId = conversations[i].id;
+                    console.log("Processing conversation with ID:", conversationId);
+                    var button = $('<div class="conversation-item"><button class="conversation-button" data-conversation-id="' + conversationId + '">Conversation ' + conversationId + '</button><span onclick="deleteConversation(\'' + conversationId + '\')">[x]</span></div>');
+                    $('#conversation-list').append(button);
+                    console.log("Adding conversation item for ID: ", conversationId);
+
+                }
+                
+                // Add the "New Conversation" button
+                var newButton = $('<button class="conversation-button" data-conversation-id="new">New Conversation</button>');
+                $('#conversation-list').append(newButton);
+            });
+        }
+
+
+        function deleteConversation(conversationId) {
+            // Prevent the parent button click event from triggering
+            event.stopPropagation();
+
+            // Confirm deletion
+            var confirmDelete = confirm("Are you sure you want to delete this conversation?");
+            if (confirmDelete) {
+                // Remove the conversation from the server
+                deleteConversationOnServer(conversationId);
+
+                // Remove the conversation item from the UI
+                $('div.conversation-item button[data-conversation-id="' + conversationId + '"]').parent().remove();
+            }
+        }
+
+        function deleteConversationOnServer(conversationId) {
+            $.ajax({
+                url: '/delete_conversation',
+                type: 'POST',
+                data: { conversation_id: conversationId },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        console.log('Conversation deleted successfully.');
+                        // You might want to refresh the conversation list here
+                        refreshConversationsList();
+                    } else {
+                        console.error('Error deleting conversation: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting conversation: ' + error);
+                }
+            });
+        }
+
+
+
+        function createNewConversation() {
+            var firstMessage = prompt("Enter the first message for the new conversation:");
+            if (firstMessage) {
+                $.post("/new_conversation", { first_message: firstMessage }, function(response) {
+                    var newConversationId = response.conversation_id;
+                    var newConversationName = response.conversation_name;
+                    addConversationToList(newConversationId, newConversationName);
+                    selectConversation(newConversationId);
+                });
+            }
+        }
+
+        function addConversationToList(conversationId, conversationName) {
+            var conversationItem = $('<div class="conversation-item"></div>');
+            var conversationButton = $('<button class="conversation-button" data-conversation-id="' + conversationId + '">' + conversationName + '</button>');
+            var deleteSpan = $('<span onclick="deleteConversation(\'' + conversationId + '\')"><i class="fas fa-trash-alt" aria-hidden="true"></i></span>');
+            
+            conversationItem.append(conversationButton);
+            conversationItem.append(deleteSpan);
+            $('#conversation-list').append(conversationItem);
+        }
+
+
+
+        function selectConversation(conversationId) {
+            currentConversationId = conversationId;
+            $.get("/select_conversation", { conversation_id: conversationId }, function(response) {
+                var conversationLog = response.conversation_log;
+                document.getElementById('conversation-log').innerHTML = '';
+                conversationLog.forEach(updateConversationLog);
+            });
+        }
+
+        function updateConversationLog(message) {
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + message.role.toLowerCase();
+            messageDiv.textContent = message.content;
+            document.getElementById('conversation-log').appendChild(messageDiv);
+            document.getElementById('conversation-log').scrollTop = document.getElementById('conversation-log').scrollHeight;
+        }
+
+        function checkEnter(event) {
+            if (event.which == 13 && !event.shiftKey) {
+                event.preventDefault();
+                var user_input = $('#chat-input').val();
+                var user_name = $('#user-name').val();
+                var personalized_input = '[' + user_name + '] ' + user_input;
+                updateConversationLog({role: "user", content: personalized_input});
+                $.post("/generate", { input_text: personalized_input, conversation_id: currentConversationId }, function(response) {
+                    updateConversationLog(response);
+                });
+                $('#chat-input').val('');
+            }
+        }
+
+        // Load existing conversations on page load
+        $(document).ready(function() {
+            $.get("/get_conversations", function(response) {
+                var conversations = response.conversations;
+                conversations.forEach(function(conversation) {
+                    addConversationToList(conversation.id, conversation.name);
+                });
+            });
+        });
+
+        function checkForNewMessages() {
+            selectConversation(currentConversationId);
+        }
+
+        // Check for new messages every 5 seconds
+        setInterval(checkForNewMessages, 5000);
+    </script>
+
+</body>
+</html>

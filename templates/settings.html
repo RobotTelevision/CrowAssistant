@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowSettings</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            height: 100vh;
+        }
+        #settings-container {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #00ccff;
+            margin-bottom: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #bbbbbb;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            background-color: #1d1d1d;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        input[type="number"] {
+            width: calc(100% - 16px);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #00ccff;
+            color: #000000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #33d6ff;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .error {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div id="settings-container">
+        <h1>Crow Settings</h1>
+        <a href="/" id="sconv">Return to Conversations</a>
+        <form id="settingsForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ config['name'] }}" required>
+
+            <label for="personality">Personality:</label>
+            <textarea id="personality" name="personality" required>{{ config['personality'] }}</textarea>
+
+            <label for="voice">Voice (1-905):</label>
+            <input type="number" id="voice" name="voice" min="1" max="905" value="{{ config['voice'] }}" required>
+
+            <label for="url">URL:</label>
+            <input type="url" id="url" name="url" value="{{ config['url'] }}" required>
+
+            <label for="api_key">API Key:</label>
+            <input type="password" id="api_key" name="api_key" value="{{ config['api_key'] }}" required>
+
+            <label for="model">Model:</label>
+            <input type="text" id="model" name="model" value="{{ config['model'] }}" required>
+
+            <label for="scale">Scale Multiplier:</label>
+            <input type="number" id="scale" name="scale" value="{{ config['scale'] }}" required>
+
+            <label for="mic">Microphone:</label>
+            <select id="mic" name="mic">
+                {% for device in input_devices %}
+                <option value="{{ device }}" {% if device == config.mic %}selected{% endif %}>{{ device }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="speaker">Speaker:</label>
+            <select id="speaker" name="speaker">
+                {% for device in output_devices %}
+                <option value="{{ device }}" {% if device == config.speaker %}selected{% endif %}>{{ device }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="port">Port:</label>
+            <input type="number" id="port" name="port" value="{{ config['port'] }}" required>
+
+            <label for="maxtoken">Maximum Conversation Tokens:</label>
+            <input type="number" id="maxtoken" name="maxtoken" value="{{ config['maxtoken'] }}" required>
+
+            <label for="maxmsg">Maximum Conversation Messages:</label>
+            <input type="number" id="maxmsg" name="maxmsg" value="{{ config['maxmsg'] }}" required>
+
+            <br>
+            <button type="submit">Save</button>
+        </form>
+        <div id="message"></div> -->
+<div id="settings-container">
+     <form id="settingsForm">
+
+<h1>Crow Settings</h1>
+    <a href="/" id="sconv">Return to Conversations</a>
+    <p>
+    For Crow to work, you'll need to get and enter the API key and URL. <br>Click the link to get a Groq key, there is a free teir you can use.
+   
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ config['name'] }}" required>
+        <p class="help-text">Enter the name you'd like to call your AI assistant. Make sure its something the Text To Speech system can understand easily.</p>
+
+        <label for="personality">Personality:</label>
+        <textarea id="personality" name="personality" required>{{ config['personality'] }}</textarea>
+        <p class="help-text">Describe the personality traits you want your AI to exhibit. (ie: You are sarcastic and tell puns constantly.)</p>
+
+        <label for="voice">Voice (1-905):</label>
+        <input type="number" id="voice" name="voice" min="1" max="905" value="{{ config['voice'] }}" required>
+        <p class="help-text">Select a voice ID for text-to-speech. Changing this value lets you preview the voice.</p>
+
+        <label for="url">URL:</label>
+        <input type="url" id="url" name="url" value="{{ config['url'] }}" required>
+        <p class="help-text">Enter the API endpoint URL for the AI service. For Groq this is: https://api.groq.com/openai/v1</p>
+
+        <label for="api_key">API Key:</label>
+        <input type="password" id="api_key" name="api_key" value="{{ config['api_key'] }}" required>
+        <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">Get your Groq API key</a>
+        <p class="help-text">Enter your API key for authentication. Keep this private!</p>
+
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" value="{{ config['model'] }}" required>
+        <p class="help-text">Specify the AI model to use. This needs to be the exact model name used by the API. <br>For Groq, try: llama-3.1-8b-instant</p>
+
+        <label for="scale">Scale Multiplier:</label>
+        <input type="number" id="scale" name="scale" value="{{ config['scale'] }}" required>
+        <p class="help-text">Adjust the size of the crow on screen.</p>
+
+        <label for="mic">Microphone:</label>
+        <select id="mic" name="mic">
+            {% for device in input_devices %}
+            <option value="{{ device }}" {% if device == config.mic %}selected{% endif %}>{{ device }}</option>
+            {% endfor %}
+        </select>
+        <p class="help-text">Select the microphone device for voice input.</p>
+       
+        <label for="speaker">Speaker:</label>
+        <select id="speaker" name="speaker">
+            {% for device in output_devices %}
+            <option value="{{ device }}" {% if device == config.speaker %}selected{% endif %}>{{ device }}</option>
+            {% endfor %}
+        </select>
+        <p class="help-text">Choose the speaker device for audio output.</p>
+
+        <br>
+        If you don't know what these are, don't change them :D
+        <label for="port">Port:</label>
+        <input type="number" id="port" name="port" value="{{ config['port'] }}" required>
+        <p class="help-text">Specify the port number for the application to run on.</p>
+
+        <label for="maxtoken">Maximum Conversation Tokens:</label>
+        <input type="number" id="maxtoken" name="maxtoken" value="{{ config['maxtoken'] }}" required>
+        <p class="help-text">Set the maximum number of tokens allowed in a conversation.</p>
+
+        <label for="maxmsg">Maximum Conversation Messages:</label>
+        <input type="number" id="maxmsg" name="maxmsg" value="{{ config['maxmsg'] }}" required>
+        <p class="help-text">Set the maximum number of messages allowed in a conversation history.</p>
+
+        <br>
+        <button type="submit">Save</button>
+    </form>
+    <div id="message"></div>
+</div>
+    <script>
+        $(document).ready(function() {
+            $('#settingsForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/settings',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        alert('Settings saved successfully!');
+                    },
+                    error: function() {
+                        alert('Error saving settings.');
+                    }
+                });
+            });
+
+            $('#voice').on('change', function() {
+                $.ajax({
+                    url: '/test_voice',
+                    method: 'POST',
+                    data: { voice: $(this).val() },
+                    success: function(response) {
+                        console.log('Voice tested');
+                    },
+                    error: function() {
+                        console.error('Error testing voice');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
