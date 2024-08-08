@@ -17,3 +17,12 @@ Setup your Mic and Speakers, Save the settings and then restart Crow.
 To start talking to Crow, just say his name and he should start listening.
 
 When Crow is not in conversation he rests above the system tray.
+
+## Running the Code
+
+you'll need to download a windows release of Piper: https://github.com/rhasspy/piper/releases
+Put the exe and other files right in the base directory... i know its a bit of a messy way to do things, but I'll try to clean it up in future releases.
+
+You'll also need to grab the libritts_r onnx and json files for the voice to work: https://huggingface.co/rhasspy/piper-voices/tree/main/en/en_US/libritts_r/medium
+
+And that should do it.
