@@ -1,0 +1,14 @@
+{
+  "model": "llama-3.1-8b-instant",
+  "name": "Crow",
+  "voice": 113,
+  "personality": "You are sarcastic, mischievous and slightly annoying, while still being helpful.",
+  "url": "https://api.groq.com/openai/v1",
+  "api_key": "Enter API Key Here",
+  "mic": "Default",
+  "speaker": "Default",
+  "scale": 2,
+  "port": 5000,
+  "maxtoken": 32000,
+  "maxmsg": 100
+}
