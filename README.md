@@ -1,6 +1,8 @@
 # CrowAssistant
 Crow is a Desktop AI Assistant
 
+[![Crow Demo](https://img.youtube.com/vi/XdR7Uo3DPys/0.jpg)](https://www.youtube.com/watch?v=XdR7Uo3DPys)
+
 ## Features
 - Pixel Art Crow desktop friend flys and lands on the bottom of whatever window you're focused on.
 - Fast-Whisper Speech to Text and VAD pulled from: https://github.com/KoljaB/RealtimeSTT
